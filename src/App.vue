@@ -98,12 +98,12 @@
               <li
                 class="list-group-item p-0"
                 v-for="item in searchToilets"
-                :key="item.properties.id"
+                :key="item.name"
               >
                 <div class="search-list p-2" @click="changePosition('選擇地點', item)">
-                  <p class="search-list-name mb-0 h5">{{ item.properties.name }}</p>
+                  <p class="search-list-name mb-0 h5">{{ item.name }}</p>
                   <p class="search-list-address text-secondary mb-0">
-                    {{ item.properties.address }}
+                    {{ item.address }}
                   </p>
                 </div>
               </li>
@@ -120,7 +120,7 @@
                 value="toilet_men"
                 v-model="stock"
               />
-              <label class="custom-control-label" for="men_stock">男生</label>
+              <label class="custom-control-label" for="men_stock">男廁</label>
             </div>
 
             <div class="custom-control custom-checkbox custom-control-inline mr-0">
@@ -131,7 +131,7 @@
                 value="toilet_women"
                 v-model="stock"
               />
-              <label class="custom-control-label" for="women_stock">女生</label>
+              <label class="custom-control-label" for="women_stock">女廁</label>
             </div>
           </div>
         </div>
@@ -205,7 +205,7 @@ export default {
         family: require('@/assets/images/businessman_baby.png'),
         accessible: require('@/assets/images/disable.png'),
       },
-      // 藥局原始資料
+      // 廁所原始資料
       toilets: [],
       // 台灣縣市名稱原始資料
       county: [],
@@ -355,16 +355,8 @@ export default {
       this.county = require('../public/taiwanCounty.json');
     },
 
-    // 取得藥局圖標與判斷顏色
+    // 取得圖標與判斷顏色
     getIcon(grade) {
-      /**
-       * 成人口罩與兒童口罩總數判斷座標顏色
-       *
-       * sum >= 500 --> Green
-       * 200 <= sum < 500 --> Gold
-       * 0 < sum < 200 --> Red
-       * sum == 0 --> Black
-       */
       let iconColor;
       if (grade === '特優級') {
         iconColor = 'gold';
@@ -373,7 +365,6 @@ export default {
       } else {
         iconColor = 'grey';
       }
-      // 創建藥局位置圖標
       return new L.Icon({
         iconUrl: `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${iconColor}.png`,
         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -383,38 +374,21 @@ export default {
         shadowSize: [41, 41],
       });
     },
-    // 取得藥局 Popup 資訊
+    // 取得 Popup 資訊
     getToiletPopup(toilet) {
       return `
             <h1 class="h5 font-weight-bold">${toilet.name}</h1>
             <p class="text-secondary mt-0 mb-2"><i class="fas fa-map-marker-alt pr-2" style="padding-left: 2.5px;"></i>${
   toilet.address
 }</p>
-            <p class="text-secondary mt-0 mb-2"><i class="fal fa-phone-rotary pr-2" style="padding-left: 1.5px;"></i>${
+            <p class="text-secondary mt-0 mb-2"><i class="fal fa-building pr-2" style="padding-left: 1.5px;"></i>${
   toilet.type2
-}</p>
-              <div class="d-flex justify-content-around mb-2">
-              <div class="toilet-num toilet-num__man text-white d-flex justify-content-center align-items-center mr-1 ${
-  'bg-toilet-primary'}">
-                男廁: ${2}
-              </div>
-              <div class="toilet-num toilet-num__woman text-white d-flex justify-content-center align-items-center ml-1 ${
-  'bg-toilet-secondary'}">
-                女廁: ${3}
-              </div>
-            </div>`;
+}</p>`;
     },
-
-    /**
-     * 改變地圖位置至選擇的藥局的地點
-     */
     changePosition(type, selectedToilet) {
       const vm = this;
       let toiletPlace;
-      /**
-       * ! 當選擇的城市改變時，會默認將 filteredDistricts 行政區陣列資料的第一筆資料賦值到 selectedDistrict，否則，行政區的選項第一個會是空白。
-       * * 點擊左方藥局欄時，跳出 Popup 視窗。
-       */
+
       if (type === '選擇城市') {
         vm.selectedDistrict = vm.filteredDistricts[0].AreaName;
         [toiletPlace] = vm.filteredToilets;
@@ -441,7 +415,6 @@ export default {
         });
       }
 
-      // 如果選擇的行政區沒有藥局，則不移動
       if (vm.filteredToilets.length === 0) return;
 
       window.map.setView(
@@ -451,7 +424,7 @@ export default {
     },
 
     /**
-     * 如果使用者拒絕提供地理位置，則默認顯示為第一筆藥局位置
+     * 如果使用者拒絕提供地理位置，則默認顯示為第一筆廁所位置
      */
     firstLocate() {
       window.navigator.geolocation.watchPosition(() => this.relocate());
@@ -462,7 +435,7 @@ export default {
       });
     },
     /**
-     * 點擊搜尋欄出現下拉選單，再點擊選擇的藥局時，由於 blur 會比 click 還早觸發
+     * 點擊搜尋欄出現下拉選單，再點擊選擇的廁所時，由於 blur 會比 click 還早觸發
      * 所以加 setTimeout 來延遲
      */
     focusOut() {
@@ -486,7 +459,7 @@ export default {
   async mounted() {
     const vm = this;
 
-    // 取得藥局資料
+    // 取得廁所資料
     await vm.axios
       .get('https://raw.githubusercontent.com/wujoe0415/UrgentComfort/master/src/data/combined_output.json')
       .then((res) => {
@@ -514,7 +487,7 @@ export default {
 
     // 匯入至地圖中
     for (let i = 0; i < vm.toilets.length; i += 1) {
-      // 取得 藥局位置 icon
+      // 取得 廁所位置 icon
       const icon = vm.getIcon(vm.toilets[i].grade);
       // vm.setAvatar(toiletman, toiletwoman);
       markers.addLayer(
