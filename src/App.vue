@@ -141,40 +141,26 @@
         <div
           class="board-body__item p-2 border-bottom"
           v-for="item in filteredToilets"
-          :key="item.id"
+          :key="item.name"
           @click="changePosition('選擇廁所', item)"
         >
-          <h2 class="toilet-title h4">{{ item.properties.name }}</h2>
-          <p class="text-secondary">{{ item.properties.address }}</p>
-          <p class="text-secondary">{{ item.properties.phone }}</p>
+          <h2 class="toilet-title h4">{{ item.name }}</h2>
+          <p class="text-secondary">{{ item.address }}</p>
+          <p class="text-secondary">{{ item.type2 }}</p>
           <div class="d-flex justify-content-around mb-2">
             <div
               class="toilet-num toilet-num__man text-white
               d-flex justify-content-around align-items-center mr-1"
-              :class="item.properties.toilet_men > 0 ? 'bg-toilet-primary' : 'bg-toilet-none'"
+              :class="'bg-toilet-primary'"
             >
               <img
                 class="d-inline-block position-relative"
-                :src="getAvatar('man', item.properties.toilet_men)"
-                width="40"
-                alt="man-avatar"
+                :src="getAvatar(item.type)"
+                width="70"
+                alt="toilet-avatar"
                 style="top: 2px;"
               />
-              {{ item.properties.toilet_men }}
-            </div>
-            <div
-              class="toilet-num toilet-num__woman  text-white
-              d-flex justify-content-around align-items-center ml-1"
-              :class="item.properties.toilet_women > 0 ? 'bg-toilet-secondary' : 'bg-toilet-none'"
-            >
-              <img
-                class="d-inline-block position-relative"
-                :src="getAvatar('woman', item.properties.toilet_women)"
-                width="40"
-                alt="woman-avatar"
-                style="top: 6px;"
-              />
-              {{ item.properties.toilet_women }}
+              {{ 1 }}
             </div>
           </div>
         </div>
@@ -213,18 +199,11 @@ export default {
       isFocus: false,
       // 人物圖片
       avatar: {
-        man: {
-          laugh: require('@/assets/images/face_smile_man4.png'),
-          smile: require('@/assets/images/face_smile_boy2.png'),
-          shock: require('@/assets/images/necchusyou_face_boy2.png'),
-          cry: require('@/assets/images/necchusyou_face_boy4.png'),
-        },
-        woman: {
-          laugh: require('@/assets/images/face_smile_woman4.png'),
-          smile: require('@/assets/images/face_smile_woman2.png'),
-          shock: require('@/assets/images/necchusyou_face_girl2.png'),
-          cry: require('@/assets/images/necchusyou_face_girl4.png'),
-        },
+        man: require('@/assets/images/face_smile_man4.png'),
+        woman: require('@/assets/images/face_smile_woman4.png'),
+        friendly: require('@/assets/images/friendly.png'),
+        family: require('@/assets/images/businessman_baby.png'),
+        accessible: require('@/assets/images/disable.png'),
       },
       // 藥局原始資料
       toilets: [],
@@ -272,21 +251,21 @@ export default {
       let toilets = [];
       if (vm.stock.length === 0) {
         toilets = vm.toilets.filter(
-          (i) => i.properties.county === vm.selectedCity
-          && i.properties.town === vm.selectedDistrict,
+          (i) => i.country === vm.selectedCity
+          && i.city === vm.selectedDistrict,
         );
       } else if (vm.stock.length === 1) {
         toilets = vm.toilets.filter(
-          (i) => i.properties.county === vm.selectedCity
-          && i.properties.town === vm.selectedDistrict
-          && i.properties[vm.stock[0]] > 0,
+          (i) => i.country === vm.selectedCity
+          && i.city === vm.selectedDistrict
+          && i[vm.stock[0]] > 0,
         );
       } else {
         toilets = vm.toilets.filter(
-          (i) => i.properties.county === vm.selectedCity
-          && i.properties.town === vm.selectedDistrict
-          && i.properties[vm.stock[0]] > 0
-          && i.properties[vm.stock[1]] > 0,
+          (i) => i.country === vm.selectedCity
+          && i.city === vm.selectedDistrict
+          && i[vm.stock[0]] > 0
+          && i[vm.stock[1]] > 0,
         );
       }
 
@@ -298,25 +277,27 @@ export default {
         ? []
         : vm.toilets
           .filter(
-            (item) => item.properties.name.includes(vm.searchWord)
-                || item.properties.address.includes(vm.searchWord)
-                || item.properties.town.includes(vm.searchWord),
+            (item) => item.name.includes(vm.searchWord)
+                || item.address.includes(vm.searchWord)
+                || item.city.includes(vm.searchWord),
           )
           .splice(0, 10);
     },
   },
   methods: {
-    getAvatar(type, toiletNum) {
+    getAvatar(type) {
       const vm = this;
       let avatar;
-      if (toiletNum >= 500) {
-        avatar = vm.avatar[type].laugh;
-      } else if (toiletNum < 500 && toiletNum >= 200) {
-        avatar = vm.avatar[type].smile;
-      } else if (toiletNum < 200 && toiletNum > 0) {
-        avatar = vm.avatar[type].shock;
-      } else if (toiletNum === 0) {
-        avatar = vm.avatar[type].cry;
+      if (type === '男廁') {
+        avatar = vm.avatar.man;
+      } else if (type === '女廁') {
+        avatar = vm.avatar.woman;
+      } else if (type === '無障礙廁所') {
+        avatar = vm.avatar.accessible;
+      } else if (type === '性別友善廁所') {
+        avatar = vm.avatar.friendly;
+      } else if (type === '親子廁所') {
+        avatar = vm.avatar.family;
       }
       return avatar;
     },
@@ -375,7 +356,7 @@ export default {
     },
 
     // 取得藥局圖標與判斷顏色
-    getIcon(toiletSum) {
+    getIcon(grade) {
       /**
        * 成人口罩與兒童口罩總數判斷座標顏色
        *
@@ -385,14 +366,12 @@ export default {
        * sum == 0 --> Black
        */
       let iconColor;
-      if (toiletSum >= 200 && toiletSum < 500) {
+      if (grade === '特優級') {
         iconColor = 'gold';
-      } else if (toiletSum > 0 && toiletSum < 200) {
-        iconColor = 'red';
-      } else if (toiletSum === 0) {
-        iconColor = 'grey';
-      } else {
+      } else if (grade === '優等級') {
         iconColor = 'green';
+      } else {
+        iconColor = 'grey';
       }
       // 創建藥局位置圖標
       return new L.Icon({
@@ -407,30 +386,23 @@ export default {
     // 取得藥局 Popup 資訊
     getToiletPopup(toilet) {
       return `
-            <h1 class="h5 font-weight-bold">${toilet.properties.name}</h1>
+            <h1 class="h5 font-weight-bold">${toilet.name}</h1>
             <p class="text-secondary mt-0 mb-2"><i class="fas fa-map-marker-alt pr-2" style="padding-left: 2.5px;"></i>${
-  toilet.properties.address
+  toilet.address
 }</p>
             <p class="text-secondary mt-0 mb-2"><i class="fal fa-phone-rotary pr-2" style="padding-left: 1.5px;"></i>${
-  toilet.properties.phone
+  toilet.type2
 }</p>
-            <div class="d-flex justify-content-around mb-2">
+              <div class="d-flex justify-content-around mb-2">
               <div class="toilet-num toilet-num__man text-white d-flex justify-content-center align-items-center mr-1 ${
-  toilet.properties.toilet_men > 0 ? 'bg-toilet-primary' : 'bg-toilet-none'
-}">
-                男廁: ${toilet.properties.toilet_men}
+  'bg-toilet-primary'}">
+                男廁: ${2}
               </div>
               <div class="toilet-num toilet-num__woman text-white d-flex justify-content-center align-items-center ml-1 ${
-  toilet.properties.toilet_women > 0 ? 'bg-toilet-secondary' : 'bg-toilet-none'
-}">
-                女廁: ${toilet.properties.toilet_women}
+  'bg-toilet-secondary'}">
+                女廁: ${3}
               </div>
-            </div>
-            <p class="text-secondary mt-0 mb-2"><i class="fal fa-cloud-upload pr-2"></i>${
-  toilet.properties.updated !== ''
-    ? toilet.properties.updated
-    : '<span class="text-danger">抱歉，未取得資料 <i class="fal fa-sad-tear"></i></span>'
-}</p>`;
+            </div>`;
     },
 
     /**
@@ -455,10 +427,9 @@ export default {
         if (window.document.body.clientWidth <= 768) {
           vm.isActive = false;
         }
-        const toiletSum = toiletPlace.properties.toilet_men + toiletPlace.properties.toilet_women;
         const marker = L.marker(
-          [toiletPlace.geometry.coordinates[1], toiletPlace.geometry.coordinates[0]],
-          vm.getIcon(toiletSum),
+          [toiletPlace.latitude, toiletPlace.longitude],
+          vm.getIcon(toiletPlace.grade),
         ).bindPopup(vm.getToiletPopup(toiletPlace), {
           maxWidth: 999,
         });
@@ -474,7 +445,7 @@ export default {
       if (vm.filteredToilets.length === 0) return;
 
       window.map.setView(
-        [toiletPlace.geometry.coordinates[1], toiletPlace.geometry.coordinates[0]],
+        [toiletPlace.latitude, toiletPlace.longitude],
         16,
       );
     },
@@ -517,9 +488,9 @@ export default {
 
     // 取得藥局資料
     await vm.axios
-      .get('https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json')
+      .get('https://raw.githubusercontent.com/wujoe0415/UrgentComfort/master/src/data/combined_output.json')
       .then((res) => {
-        vm.toilets = res.data.features;
+        vm.toilets = res.data;
       });
 
     const map = L.map('toilet-map', {
@@ -543,15 +514,12 @@ export default {
 
     // 匯入至地圖中
     for (let i = 0; i < vm.toilets.length; i += 1) {
-      const toiletman = vm.toilets[i].properties.toilet_men;
-      const toiletwoman = vm.toilets[i].properties.toile_twoman;
-      const toiletSum = toiletman + toiletwoman;
       // 取得 藥局位置 icon
-      const icon = vm.getIcon(toiletSum);
+      const icon = vm.getIcon(vm.toilets[i].grade);
       // vm.setAvatar(toiletman, toiletwoman);
       markers.addLayer(
         L.marker(
-          [vm.toilets[i].geometry.coordinates[1], vm.toilets[i].geometry.coordinates[0]],
+          [vm.toilets[i].latitude, vm.toilets[i].longitude],
           {
             icon,
           },
