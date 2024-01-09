@@ -11,7 +11,7 @@
         </p>
         <p><i class="fal fa-stars mr-1"></i>為了方便查詢，請開啟存取位置權限</p>
         <p>
-          <i class="fal fa-stars mr-1"></i>若想要了解更多程式碼請參考
+          <i class="fal fa-stars mr-1"></i>想了解更多程式碼請參考
           <a href="https://github.com/wujoe0415/UrgentComfort.git" target="_blank"
             >廁所地圖 GitHub
           </a>
@@ -40,7 +40,7 @@
         <i class="far fa-angle-left"></i>
       </button>
       <!--    導覽列 header     -->
-      <div class="board-header bg-mask-primary">
+      <div class="board-header bg-toilet-primary">
         <div class="board-header__info d-flex justify-content-around align-items-center pt-2 pb-2">
           <div class="header-header__date text-white">
             <p>{{ today.date }}</p>
@@ -49,15 +49,9 @@
 
           <div class="board-header__avatar">
             <img
-              src="@/assets/images/medical_mask07_businessman.png"
-              width="70"
-              alt="man with mask"
-            />
-            <img
-              class="pt-3"
-              src="@/assets/images/medical_mask02_girl.png"
-              width="60"
-              alt="girl with mask"
+              src="@/assets/images/toilet_emergency.png"
+              width="130"
+              alt="public toilet"
             />
           </div>
         </div>
@@ -148,36 +142,36 @@
           class="board-body__item p-2 border-bottom"
           v-for="item in filteredToilets"
           :key="item.id"
-          @click="changePosition('選擇藥局', item)"
+          @click="changePosition('選擇廁所', item)"
         >
           <h2 class="toilet-title h4">{{ item.properties.name }}</h2>
           <p class="text-secondary">{{ item.properties.address }}</p>
           <p class="text-secondary">{{ item.properties.phone }}</p>
           <div class="d-flex justify-content-around mb-2">
             <div
-              class="mask-num mask-num__man text-white
+              class="toilet-num toilet-num__man text-white
               d-flex justify-content-around align-items-center mr-1"
-              :class="item.properties.toilet_men > 0 ? 'bg-mask-primary' : 'bg-mask-none'"
+              :class="item.properties.toilet_men > 0 ? 'bg-toilet-primary' : 'bg-toilet-none'"
             >
               <img
                 class="d-inline-block position-relative"
                 :src="getAvatar('man', item.properties.toilet_men)"
                 width="40"
-                alt="woman-avatar"
+                alt="man-avatar"
                 style="top: 2px;"
               />
               {{ item.properties.toilet_men }}
             </div>
             <div
-              class="mask-num mask-num__woman  text-white
+              class="toilet-num toilet-num__woman  text-white
               d-flex justify-content-around align-items-center ml-1"
-              :class="item.properties.toilet_women > 0 ? 'bg-mask-secondary' : 'bg-mask-none'"
+              :class="item.properties.toilet_women > 0 ? 'bg-toilet-secondary' : 'bg-toilet-none'"
             >
               <img
                 class="d-inline-block position-relative"
                 :src="getAvatar('woman', item.properties.toilet_women)"
                 width="40"
-                alt="baby-avatar"
+                alt="woman-avatar"
                 style="top: 6px;"
               />
               {{ item.properties.toilet_women }}
@@ -188,15 +182,15 @@
       <div class="d-flex flex-column align-items-center" v-else>
         <img
           class="d-inline-block pt-2 mt-5 mb-3"
-          src="@/assets/images/no_masks.png"
+          src="@/assets/images/no_toilet.png"
           width="120"
           alt="dog-avatar"
         />
-        <p class="h5">抱歉，這區域乎沒有藥局 ...</p>
-        <p class="h5">試試搜尋別的地方吧 :D</p>
+        <p class="h5">抱歉，這區域乎沒有廁所 ...</p>
+        <p class="h5">試試搜尋別的地方吧</p>
       </div>
     </div>
-    <div id="mask-map" class="w-100 h-100" :class="{ active: isActive }"></div>
+    <div id="toilet-map" class="w-100 h-100" :class="{ active: isActive }"></div>
   </div>
 </template>
 
@@ -220,16 +214,16 @@ export default {
       // 人物圖片
       avatar: {
         man: {
+          laugh: require('@/assets/images/face_smile_man4.png'),
+          smile: require('@/assets/images/face_smile_boy2.png'),
+          shock: require('@/assets/images/necchusyou_face_boy2.png'),
+          cry: require('@/assets/images/necchusyou_face_boy4.png'),
+        },
+        woman: {
           laugh: require('@/assets/images/face_smile_woman4.png'),
           smile: require('@/assets/images/face_smile_woman2.png'),
           shock: require('@/assets/images/necchusyou_face_girl2.png'),
           cry: require('@/assets/images/necchusyou_face_girl4.png'),
-        },
-        woman: {
-          laugh: require('@/assets/images/baby_boy04_laugh.png'),
-          smile: require('@/assets/images/baby_boy01_smile.png'),
-          shock: require('@/assets/images/baby_boy06_shock.png'),
-          cry: require('@/assets/images/baby_boy03_cry.png'),
         },
       },
       // 藥局原始資料
@@ -312,16 +306,16 @@ export default {
     },
   },
   methods: {
-    getAvatar(type, maskNum) {
+    getAvatar(type, toiletNum) {
       const vm = this;
       let avatar;
-      if (maskNum >= 500) {
+      if (toiletNum >= 500) {
         avatar = vm.avatar[type].laugh;
-      } else if (maskNum < 500 && maskNum >= 200) {
+      } else if (toiletNum < 500 && toiletNum >= 200) {
         avatar = vm.avatar[type].smile;
-      } else if (maskNum < 200 && maskNum > 0) {
+      } else if (toiletNum < 200 && toiletNum > 0) {
         avatar = vm.avatar[type].shock;
-      } else if (maskNum === 0) {
+      } else if (toiletNum === 0) {
         avatar = vm.avatar[type].cry;
       }
       return avatar;
@@ -381,7 +375,7 @@ export default {
     },
 
     // 取得藥局圖標與判斷顏色
-    getIcon(maskSum) {
+    getIcon(toiletSum) {
       /**
        * 成人口罩與兒童口罩總數判斷座標顏色
        *
@@ -391,11 +385,11 @@ export default {
        * sum == 0 --> Black
        */
       let iconColor;
-      if (maskSum >= 200 && maskSum < 500) {
+      if (toiletSum >= 200 && toiletSum < 500) {
         iconColor = 'gold';
-      } else if (maskSum > 0 && maskSum < 200) {
+      } else if (toiletSum > 0 && toiletSum < 200) {
         iconColor = 'red';
-      } else if (maskSum === 0) {
+      } else if (toiletSum === 0) {
         iconColor = 'grey';
       } else {
         iconColor = 'green';
@@ -421,13 +415,13 @@ export default {
   toilet.properties.phone
 }</p>
             <div class="d-flex justify-content-around mb-2">
-              <div class="mask-num mask-num__man text-white d-flex justify-content-center align-items-center mr-1 ${
-  toilet.properties.toilet_men > 0 ? 'bg-mask-primary' : 'bg-mask-none'
+              <div class="toilet-num toilet-num__man text-white d-flex justify-content-center align-items-center mr-1 ${
+  toilet.properties.toilet_men > 0 ? 'bg-toilet-primary' : 'bg-toilet-none'
 }">
                 男廁: ${toilet.properties.toilet_men}
               </div>
-              <div class="mask-num mask-num__woman text-white d-flex justify-content-center align-items-center ml-1 ${
-  toilet.properties.toilet_women > 0 ? 'bg-mask-secondary' : 'bg-mask-none'
+              <div class="toilet-num toilet-num__woman text-white d-flex justify-content-center align-items-center ml-1 ${
+  toilet.properties.toilet_women > 0 ? 'bg-toilet-secondary' : 'bg-toilet-none'
 }">
                 女廁: ${toilet.properties.toilet_women}
               </div>
@@ -461,10 +455,10 @@ export default {
         if (window.document.body.clientWidth <= 768) {
           vm.isActive = false;
         }
-        const maskSum = toiletPlace.properties.toilet_men + toiletPlace.properties.toilet_women;
+        const toiletSum = toiletPlace.properties.toilet_men + toiletPlace.properties.toilet_women;
         const marker = L.marker(
           [toiletPlace.geometry.coordinates[1], toiletPlace.geometry.coordinates[0]],
-          vm.getIcon(maskSum),
+          vm.getIcon(toiletSum),
         ).bindPopup(vm.getToiletPopup(toiletPlace), {
           maxWidth: 999,
         });
@@ -528,7 +522,7 @@ export default {
         vm.toilets = res.data.features;
       });
 
-    const map = L.map('mask-map', {
+    const map = L.map('toilet-map', {
       center: [25.058709, 121.558489],
       zoom: 7,
       minZoom: 7,
@@ -549,12 +543,12 @@ export default {
 
     // 匯入至地圖中
     for (let i = 0; i < vm.toilets.length; i += 1) {
-      const maskman = vm.toilets[i].properties.toilet_men;
-      const maskwoman = vm.toilets[i].properties.mask_woman;
-      const maskSum = maskman + maskwoman;
+      const toiletman = vm.toilets[i].properties.toilet_men;
+      const toiletwoman = vm.toilets[i].properties.toile_twoman;
+      const toiletSum = toiletman + toiletwoman;
       // 取得 藥局位置 icon
-      const icon = vm.getIcon(maskSum);
-      // vm.setAvatar(maskman, maskwoman);
+      const icon = vm.getIcon(toiletSum);
+      // vm.setAvatar(toiletman, toiletwoman);
       markers.addLayer(
         L.marker(
           [vm.toilets[i].geometry.coordinates[1], vm.toilets[i].geometry.coordinates[0]],
@@ -584,23 +578,23 @@ body {
   font-family: Microsoft JhengHei;
 }
 
-$mask-primary: #73c0d8;
-$mask-secondary: #ffa573;
-$mask-none: #a5a5a5;
+$toilet-primary: #73c0d8;
+$toilet-secondary: #ffa573;
+$toilet-none: #a5a5a5;
 
-.bg-mask-primary {
-  background: $mask-primary;
+.bg-toilet-primary {
+  background: $toilet-primary;
 }
 
-.bg-mask-secondary {
-  background: $mask-secondary;
+.bg-toilet-secondary {
+  background: $toilet-secondary;
 }
 
-.bg-mask-none {
-  background: $mask-none;
+.bg-toilet-none {
+  background: $toilet-none;
 }
 
-#mask-map {
+#toilet-map {
   transition: all 1s;
   &.active {
     transform: translateX(300px);
@@ -701,7 +695,7 @@ $mask-none: #a5a5a5;
   display: none;
 }
 
-.mask-num {
+.toilet-num {
   width: 120px;
   min-height: 36px;
   border-radius: 16px;
@@ -710,7 +704,7 @@ $mask-none: #a5a5a5;
 .board-btn {
   width: 17px;
   height: 50px;
-  background: $mask-primary;
+  background: $toilet-primary;
   border-radius: 0px 5px 5px 0px;
   box-shadow: 2px 3px 6px #00000029;
   right: -26px;
