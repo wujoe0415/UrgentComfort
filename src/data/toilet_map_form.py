@@ -1,22 +1,23 @@
 import json
 
 def determine_type(name):
-    if "男廁" in name:
+    
+    if "親子" in name:
+        return "親子廁所"
+    elif any(keyword in name for keyword in ["混合廁所", "男女廁", "性別友善", "男女"]):
+        return "性別友善廁所"
+    elif any(keyword in name for keyword in ["男廁", "男"]):
         return "男廁"
-    elif "女廁" in name:
+    elif any(keyword in name for keyword in ["女廁", "女"]):
         return "女廁"
     elif any(keyword in name for keyword in ["無障礙", "殘障"]):
         return "無障礙廁所"
-    elif any(keyword in name for keyword in ["混合廁所", "男女廁", "性別友善"]):
-        return "性別友善廁所"
-    elif "親子廁所" in name:
-        return "親子廁所"
     else:
         return None
 
 
 # Replace 'file1.json', 'file2.json', 'file3.json' with your actual file paths
-file_paths = ['filtered_hsinchu.json', 'filtered_newtaipei.json', 'filtered_taoyuan.json']
+file_paths = ['filtered_taipei.json', 'filtered_hsinchu.json', 'filtered_newtaipei.json', 'filtered_taoyuan.json']
 
 combined_data = []
 
