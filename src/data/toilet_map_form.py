@@ -26,6 +26,7 @@ for file_path in file_paths:
         json_data = json.load(file)
         for data in json_data:
             data["type"] = determine_type(data["name"])
+            data["city"] = data["city"].replace("　", "")
             combined_data.append(data)
             #data.pop("type2", None)
 
