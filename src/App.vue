@@ -117,7 +117,7 @@
                 type="checkbox"
                 class="custom-control-input"
                 id="men_stock"
-                value="toilet_men"
+                value="men"
                 v-model="stock"
               />
               <label class="custom-control-label" for="men_stock">男廁</label>
@@ -128,7 +128,7 @@
                 type="checkbox"
                 class="custom-control-input"
                 id="women_stock"
-                value="toilet_women"
+                value="women"
                 v-model="stock"
               />
               <label class="custom-control-label" for="women_stock">女廁</label>
@@ -156,11 +156,11 @@
               <img
                 class="d-inline-block position-relative"
                 :src="getAvatar(item.type)"
-                width="70"
+                width="85"
                 alt="toilet-avatar"
                 style="top: 2px;"
               />
-              {{ 1 }}
+              {{ item.type }}
             </div>
           </div>
         </div>
@@ -258,14 +258,14 @@ export default {
         toilets = vm.toilets.filter(
           (i) => i.country === vm.selectedCity
           && i.city === vm.selectedDistrict
-          && i[vm.stock[0]] > 0,
+          && ((vm.stock[0] === 'men' && (i.type === '男廁' || i.type === '混合廁所'))
+            || (vm.stock[0] === 'women' && (i.type === '女廁' || i.type === '混合廁所'))),
         );
       } else {
         toilets = vm.toilets.filter(
           (i) => i.country === vm.selectedCity
           && i.city === vm.selectedDistrict
-          && i[vm.stock[0]] > 0
-          && i[vm.stock[1]] > 0,
+          && (i.type === '男廁' || i.type === '女廁' || i.type === '混合廁所'),
         );
       }
 
@@ -294,11 +294,12 @@ export default {
         avatar = vm.avatar.woman;
       } else if (type === '無障礙廁所') {
         avatar = vm.avatar.accessible;
-      } else if (type === '性別友善廁所') {
-        avatar = vm.avatar.friendly;
       } else if (type === '親子廁所') {
         avatar = vm.avatar.family;
+      } else {
+        avatar = vm.avatar.friendly;
       }
+
       return avatar;
     },
     /**
