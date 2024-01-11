@@ -2,7 +2,7 @@
 
 ## Demo Video
 
-[![image-20240111235922170](../../../../AppData/Roaming/Typora/typora-user-images/image-20240111235922170.png)](https://drive.google.com/file/d/1io1dubt4TCr-6mVYkPjBoz74AdVPOvDm/view?usp=sharing)
+[![Watch the video](https://img.youtube.com/vi/FvL_0s0tT14/hqdefault.jpg)](https://youtu.be/FvL_0s0tT14)
 
 ## Description
 
