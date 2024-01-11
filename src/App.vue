@@ -26,13 +26,147 @@
         />
       </div>
     </Modal>
-
     <!-- Loading -->
     <Loading v-if="isLoading">
       <p class="text-white m-0 h3">資料讀取中 ...</p>
     </Loading>
+    <!-- 新增資料 -->
+    <div v-if="isAddingToilet"
+    class="position-fixed top-50 start-50 translate-middle w-50 p-3"
+    style="width: 400px;">
+      <div class="position-absolute top-0 end-0 p-2" style="margin-bottom: 5px;">
+        <button type="button"
+        @click="hideToiletForm"
+        class="btn-close"
+        style="font-size: 15px; width: 15%;"
+        aria-label="Close"></button>
+      </div>
+      <form @submit.prevent="addNewToilet">
+        <div class="form-group" style="margin-bottom: 5px; margin-top: 50px;">
+          <label for="toiletName"
+          style="font-size: 20px !important; margin-right: 5px;">名稱</label>
+          <input v-model="newToilet.name" type="text"
+          style="font-size: 12px; width: 20%"
+          id="toiletName" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 5px;">
+          <label for="toiletAddress"
+          style="font-size: 20px !important; margin-right: 5px;">地址</label>
+          <input v-model="newToilet.address"
+          type="text"
+          style="font-size: 12px; width: 20%"
+          id="toiletAddress" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 5px;">
+          <label for="toiletType2"
+          style="font-size: 20px !important; margin-right: 5px;">類別</label>
+          <select v-model="newToilet.type2"
+          style="font-size: 12px; width: 20%;"
+          id="toiletType2" required>
+            <option value="醫院">醫院</option>
+            <option value="超市">超市</option>
+            <option value="公園">公園</option>
+            <option value="餐廳">餐廳</option>
+            <option value="市場">市場</option>
+            <option value="高鐵">高鐵</option>
+            <option value="加油站">一般級</option>
+            <option value="鐵路局">鐵路局</option>
+            <option value="百貨公司">百貨公司</option>
+            <option value="捷運車站">捷運車站</option>
+            <option value="娛樂場所">娛樂場所</option>
+            <option value="森林遊樂區">森林遊樂區</option>
+            <option value="各級社教機關">各級社教機關</option>
+            <option value="觀光地區及風景區">觀光地區及風景區</option>
+            <option value="民眾團體活動場所">民眾團體活動場所</option>
+            <option value="文化育樂活動場所">文化育樂活動場所</option>
+            <option value="公路車站服務區及休息站">公路車站服務區及休息站</option>
+            <option value="寺廟教堂等宗教活動場所">寺廟教堂等宗教活動場所</option>
+            <option value="公家機關設置供民眾使用者">公家機關設置供民眾使用者</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 5px;">
+          <label for="toiletGrade"
+          style="font-size: 20px !important; margin-right: 5px;">評級</label>
+          <select v-model="newToilet.grade"
+          style="font-size: 12px; width: 20%"
+          id="toiletGrade" required>
+            <option value="特優級">特優級</option>
+            <option value="優等級">優等級</option>
+            <option value="一般級">一般級</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 5px;">
+          <label for="toiletCountry"
+          style="font-size: 20px !important; margin-right: 5px;">縣市</label>
+          <input v-model="newToilet.country"
+          type="text"
+          style="font-size: 12px; width: 20%"
+          id="toiletCountry" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 5px;">
+          <label for="toiletCity"
+          style="font-size: 20px !important; margin-right: 5px;">鄉鎮</label>
+          <input v-model="newToilet.city"
+          type="text"
+          style="font-size: 12px; width: 20%"
+          id="toiletCity" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 5px;">
+          <label for="toiletVillage"
+          style="font-size: 20px !important; margin-right: 5px;">村里</label>
+          <input v-model="newToilet.village"
+          type="text"
+          style="font-size: 12px; width: 20%"
+          id="toiletVillage" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 5px;">
+          <label for="toiletLatitude"
+          style="font-size: 20px !important; margin-right: 5px;">緯度</label>
+          <input v-model="newToilet.latitude"
+          type="text"
+          style="font-size: 12px; width: 20%"
+          id="toiletLatitude" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 5px;">
+          <label for="toiletLongitude"
+          style="font-size: 20px !important; margin-right: 5px;">經度</label>
+          <input v-model="newToilet.longitude"
+          type="text"
+          style="font-size: 12px; width: 20%"
+          id="toiletLongitude" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 5px;">
+          <label for="toiletType"
+          style="font-size: 20px !important; margin-right: 5px; margin-bottom: 40px;">性別</label>
+          <select v-model="newToilet.type"
+          style="font-size: 12px; width: 20%"
+          id="toiletType" required>
+            <option value="男廁">男廁</option>
+            <option value="女廁">女廁</option>
+            <option value="親子廁所">親子廁所</option>
+            <option value="性別友善廁所">性別友善廁所</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary"
+        style="margin-right: 5px; font-size: 15px; width: 15%;">新增廁所</button>
+        <button type="button" @click="hideToiletForm"
+        class="btn btn-secondary"
+        style="font-size: 15px; width: 15%;">取消</button>
+      </form>
+    </div>
     <!--    導覽列     -->
+    <!-- sidebar -->
     <div class="board position-absolute bg-white" :class="{ active: isActive }" v-else>
+      <!--close or open sidebar-->
       <button
         class="board-btn position-absolute btn text-white d-flex justify-content-center"
         @click="isActive = !isActive"
@@ -55,6 +189,7 @@
             />
           </div>
         </div>
+        <!--下拉式-->
         <div class="board-header__search pb-3 px-3">
           <div class="d-flex justify-content-between mb-2">
             <select
@@ -136,8 +271,9 @@
           </div>
         </div>
       </div>
-
+      <!-- toilets under -->
       <div class="board-body" v-if="filteredToilets.length">
+        <!--toilets under the search bar-->
         <div
           class="board-body__item p-2 border-bottom"
           v-for="item in filteredToilets"
@@ -147,6 +283,7 @@
           <h2 class="toilet-title h4">{{ item.name }}</h2>
           <p class="text-secondary">{{ item.address }}</p>
           <p class="text-secondary">{{ item.type2 }}</p>
+          <button @click.stop="deleteToilet(item.name)" class="delete-button">刪除</button>
           <div class="d-flex justify-content-around mb-2">
             <div
               class="toilet-num toilet-num__man text-white
@@ -156,7 +293,7 @@
               <img
                 class="d-inline-block position-relative"
                 :src="getAvatar(item.type)"
-                width="85"
+                width="65"
                 alt="toilet-avatar"
                 style="top: 2px;"
               />
@@ -165,6 +302,7 @@
           </div>
         </div>
       </div>
+      <!-- no toilets -->
       <div class="d-flex flex-column align-items-center" v-else>
         <img
           class="d-inline-block pt-2 mt-5 mb-3"
@@ -176,9 +314,25 @@
         <p class="h5">試試搜尋別的地方吧</p>
       </div>
     </div>
+    <button v-if="!isAddingToilet" @click="showToiletForm"
+    class="btn btn-primary btn-add-toilet">
+      新增廁所
+    </button>
     <div id="toilet-map" class="w-100 h-100" :class="{ active: isActive }"></div>
   </div>
 </template>
+
+<style lang="scss">
+  .btn-add-toilet {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    font-size: 16px; /* Adjust the font size */
+    padding: 8px 12px; /* Adjust the padding */
+    border-radius: 8px; /* Adjust the border radius */
+  }
+</style>
 
 <script>
 /* eslint-disable global-require */
@@ -187,16 +341,18 @@
 import L from 'leaflet';
 import 'leaflet.markercluster';
 import { format, getDay } from 'date-fns';
+import axios from 'axios';
 
 export default {
   data() {
     return {
       // 讀取畫面
-      isLoading: true,
+      isLoading: false,
       // 是否啟用左方導覽版
       isActive: true,
       // 搜尋欄位是否 focus
       isFocus: false,
+      isAddingToilet: false,
       // 人物圖片
       avatar: {
         man: require('@/assets/images/face_smile_man4.png'),
@@ -209,12 +365,12 @@ export default {
       toilets: [],
       // 台灣縣市名稱原始資料
       county: [],
-      /**
+      /*
        * 選擇的城市名稱與行政區，預設為臺北市中正區
        */
       selectedCity: '臺北市',
       selectedDistrict: '中正區',
-      /**
+      /*
        * date: 日期 YYYY/MM/DD
        * weekDayNum: 星期幾 數字
        * weekDay: 星期幾 文字
@@ -228,6 +384,18 @@ export default {
       searchWord: '',
       // 口罩存量選擇
       stock: [],
+      newToilet: {
+        name: '',
+        address: '',
+        type2: '',
+        grade: '',
+        country: '',
+        city: '',
+        village: '',
+        latitude: '',
+        longitude: '',
+        type: '',
+      },
     };
   },
   components: {
@@ -243,7 +411,6 @@ export default {
           districts = item.AreaList;
         }
       });
-
       return districts;
     },
     filteredToilets() {
@@ -285,6 +452,65 @@ export default {
     },
   },
   methods: {
+    // 刪除廁所
+    deleteToilet(toiletId) {
+      const toiletName = toiletId;
+      if (!toiletId) {
+        alert('刪除失敗: 未提供廁所ID');
+        return;
+      }
+      if (!window.confirm(`確定要刪除 ID 為 ${toiletId} 的廁所嗎？`)) {
+        return;
+      }
+      axios.delete(`http://localhost:3001/api/taiwan_toilets/${encodeURIComponent(toiletName)}`)
+        .then(() => {
+        // If the deletion is successful, update the local state
+          this.toilets = this.toilets.filter((toilet) => toilet.id !== toiletId);
+          alert('公廁刪除成功！');
+        })
+        .catch((error) => {
+          console.error('刪除失敗', error);
+          alert('刪除公廁失敗！');
+        });
+    },
+
+    // 新增廁所
+    showToiletForm() {
+      this.isAddingToilet = true;
+    },
+    hideToiletForm() {
+      this.isAddingToilet = false;
+    },
+    addNewToilet() {
+      const { newToilet } = this;
+      this.toilets.push(newToilet);
+      console.log('Updated Toilets Array:', this.toilets);
+      this.newToilet = {
+        name: '',
+        address: '',
+        type2: '',
+        grade: '',
+        country: '',
+        city: '',
+        village: '',
+        latitude: '',
+        longitude: '',
+        type: '',
+      };
+      this.hideToiletForm();
+      this.axios.post('http://localhost:3001/api/taiwan_toilets', newToilet)
+        .then((response) => {
+          console.log('Toilet added successfully:', response.data);
+        })
+        .catch((error) => {
+          console.error('Error adding toilet:', error);
+        });
+      const icon = this.getIcon(newToilet.grade);
+      const marker = L.marker([newToilet.latitude, newToilet.longitude], { icon })
+        .bindPopup(this.getToiletPopup(newToilet), { maxWidth: 999 })
+        .openPopup();
+      window.map.markers.addLayer(marker);
+    },
     getAvatar(type) {
       const vm = this;
       let avatar;
@@ -302,9 +528,6 @@ export default {
 
       return avatar;
     },
-    /**
-     * 取得當天的日期
-     */
     getToday() {
       const vm = this;
       const date = format(new Date(), 'yyyy-MM-dd');
@@ -338,21 +561,7 @@ export default {
           break;
       }
     },
-
-    /**
-     * 取得台灣縣市鎮名稱資料
-     */
     getCounty() {
-      /**
-       * * 等之後開 API 再來用
-       */
-      // const vm = this;
-
-      // vm.axios.get(`${process.env.VUE_APP_APIPATH}`).then((res) => {
-      //   vm.county = res.data;
-      // });
-
-      // * 偷懶先用這招
       this.county = require('../public/taiwanCounty.json');
     },
 
@@ -451,20 +660,15 @@ export default {
     vm.getToday();
     vm.getCounty();
   },
-  // updated() {
-  //   const vm = this;
-  //   setTimeout(() => {
-  //     vm.isLoading = false;
-  //   }, 2000);
-  // },
   async mounted() {
     const vm = this;
-
-    // 取得廁所資料
     await vm.axios
-      .get('https://raw.githubusercontent.com/wujoe0415/UrgentComfort/master/src/data/combined_output.json')
+      .get('http://localhost:3001/api/taiwan_toilets')
       .then((res) => {
         vm.toilets = res.data;
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
       });
 
     const map = L.map('toilet-map', {
@@ -501,6 +705,18 @@ export default {
           .bindPopup(vm.getToiletPopup(vm.toilets[i]), {
             maxWidth: 999,
           })
+          .openPopup(),
+      );
+    }
+    window.map.markers = new L.MarkerClusterGroup().addTo(window.map);
+    for (let i = 0; i < vm.toilets.length; i += 1) {
+      const icon = vm.getIcon(vm.toilets[i].grade);
+      window.map.markers.addLayer(
+        L.marker(
+          [vm.toilets[i].latitude, vm.toilets[i].longitude],
+          { icon },
+        )
+          .bindPopup(vm.getToiletPopup(vm.toilets[i]), { maxWidth: 999 })
           .openPopup(),
       );
     }
